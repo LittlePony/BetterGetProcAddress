@@ -1,7 +1,8 @@
 #include<stdio.h>
 #include<windows.h>
-#include<winternl.h>
 #include"exports.h"
+#include"structs.h"
+
 
 // https://hfiref0x.github.io/syscalls.html
 

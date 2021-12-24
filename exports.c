@@ -1,15 +1,22 @@
 #include<stdio.h>
 #include<windows.h>
-#include<winternl.h>
 #include"exports.h"
+#include"structs.h"
 
 DWORD get_syscall(PCHAR func){
-	PPEB p = (PPEB)__readgsqword(0x60);
-	PLIST_ENTRY main_module = &p -> Ldr -> InMemoryOrderModuleList;
-	PLIST_ENTRY module = main_module -> Flink -> Flink; // skip to ntdll.
-	PLDR_DATA_TABLE_ENTRY dll = (PLDR_DATA_TABLE_ENTRY)((PCHAR)module - sizeof(LIST_ENTRY));
+	PPEB peb = (PPEB)__readgsqword(0x60);
+	PLIST_ENTRY head = &peb->LoaderData->InMemoryOrderModuleList;
+	PLIST_ENTRY current = head;
 
-	return get_export(dll -> DllBase, func);
+	PLDR_DATA_TABLE_ENTRY dll = NULL;
+	while ((current = current->Flink) != head)
+	{		
+		dll = (PLDR_DATA_TABLE_ENTRY)((PCHAR)current - sizeof(LIST_ENTRY));
+		if (!wcscmp(dll->BaseDllName.Buffer, L"ntdll.dll")) {
+			break;
+		}
+	}
+	return get_export(dll->DllBase, func);
 }
 
 DWORD get_export(PVOID base, PCHAR func){
