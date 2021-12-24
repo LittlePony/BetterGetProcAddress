@@ -8,15 +8,15 @@ DWORD get_syscall(PCHAR func){
 	PLIST_ENTRY head = &peb->LoaderData->InMemoryOrderModuleList;
 	PLIST_ENTRY current = head;
 
-	PLDR_DATA_TABLE_ENTRY dll = NULL;
+	PLDR_DATA_TABLE_ENTRY dll;
 	while ((current = current->Flink) != head)
 	{		
 		dll = (PLDR_DATA_TABLE_ENTRY)((PCHAR)current - sizeof(LIST_ENTRY));
 		if (!wcscmp(dll->BaseDllName.Buffer, L"ntdll.dll")) {
-			break;
+			return get_export(dll->DllBase, func);
 		}
 	}
-	return get_export(dll->DllBase, func);
+	return NULL;
 }
 
 DWORD get_export(PVOID base, PCHAR func){
