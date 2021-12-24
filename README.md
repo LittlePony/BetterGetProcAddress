@@ -1,3 +1,4 @@
+resolve syscalls variant
 # BetterGetProcAddress
 POC of a better/faster implementation of GetProcAddress using binary search, see the benchmark directory for more info about speed
 

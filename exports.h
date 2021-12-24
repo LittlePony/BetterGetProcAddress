@@ -1,3 +1,3 @@
-PVOID get_function_address(char *func, int method);
-PVOID get_export(PVOID base, char *func, int method);
-enum SEARCH_METHOD {MAGIC, BRUTEFORCE};
+DWORD get_syscall(PCHAR func);
+
+DWORD get_export(PVOID base, PCHAR func);
