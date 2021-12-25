@@ -1,5 +1,15 @@
 #pragma once
 
-DWORD get_syscall(PCHAR func);
+#define NTDLL L"ntdll.dll"
 
-DWORD get_export(PVOID base, PCHAR func);
+typedef struct _DLL_EXPORT {
+	PVOID DllBase;
+	PDWORD AddressOfNames;
+	PDWORD AddressOfFunctions;
+	PWORD AddressOfNameOrdinals;
+	DWORD NumberOfNames;
+} DLL_EXPORT, *PDLL_EXPORT;
+
+PDLL_EXPORT get_export(void);
+
+DWORD get_syscall(PDLL_EXPORT dll, PCHAR func);
